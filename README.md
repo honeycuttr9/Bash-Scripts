@@ -1,1 +1,1 @@
-# Bash-Scripts
+Useful bash scripts for general unix uses
