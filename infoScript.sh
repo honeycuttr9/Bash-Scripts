@@ -1,5 +1,13 @@
 #!/bin/bash
 
+#Trap ctrl-c and all ctrl_c()
+trap ctrl_c INT
+
+function ctrl_c(){
+  echo -e "\nCTRL-C Detected!!!"
+  exit 0
+}
+
 #Function to display menus
 show_menus() {
 date
@@ -45,9 +53,6 @@ read_options(){
     8) echo "Displaying Disk Usage..."
        df ;;
     9) echo "Displaying Process Usage..."
-       #htop 
-       #nmon if supported
-       #add if statement
        iostat 
        ;;
     10) echo "Hardware Info..." 
