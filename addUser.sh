@@ -1,5 +1,7 @@
 #!/bin/bash
-# Script to add a user to Linux system
+# Simple script that adds user and prompts user for username and password
+# sudo access is required
+
 if [ $(id -u) -eq 0 ]; then
     read -p "Enter username : " username
     read -s -p "Enter password : " password
