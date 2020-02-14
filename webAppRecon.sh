@@ -1,13 +1,21 @@
 #!/bin/bash
-echo "Enter url "
+echo "Enter url like google.com, facebook.com, etc..."
 read url
 
 ip=$(host $url | awk '/has address/ { print $4 ; exit }')
 echo "Running Web App Recon Against $ip"
+
+echo "Running whois"
 whois $url > whois.txt
-dns_servers =$(dig +short $url | awk '{ print ; exit } ')
-dig ns $url > digNS.txt
-dig axfr $url $dns_servers
+
+echo "Running dig"
+dig +short NS $url > dns_servers.txt
+dig ns $url > dig.txt
+cat dns_servers.txt | while read i; do
+  dig axfr $url $i >> dig.txt
+done
+
+echo "Running theHarvester"
 theHarvester -b all -d $ip > theHarvester.txt
 
 while true; do
@@ -44,20 +52,24 @@ break
 esac 
 done
 
-sslscan $ip > sslScan.txt
-wafw00f $ip > wafw00.txt
-
-name = testssl
-dpkg -s $name &> /dev/null
-
-if [ $? -ne 0 ]
-  then 
-    echo "not installed"
-    sudo apt-get update
-    sudo apt-get install $name
-  else 
-    echo "testssl is installed"
-    testssl $ip > testSSL.txt
+echo "Running SSL Scan"
+pkgs='sslscan'
+if ! dpkg -s $pkgs >/dev/null 2>&1; then
+  sudo apt-get install $pkgs
 fi
+sslscan $ip > sslScan.txt
+
+echo "Running wafw00f Scan"
+pkgs='wafw00f '
+if ! dpkg -s $pkgs >/dev/null 2>&1; then
+  sudo apt-get install $pkgs
+fi
+wafw00f $ip > wafw00f.txt
+
+pkgs='testssl.sh '
+if ! dpkg -s $pkgs >/dev/null 2>&1; then
+  sudo apt-get install $pkgs
+fi
+testssl $ip > testSSL.txt
 
 curl "$url/robots.txt" > robots.txt
