@@ -1,0 +1,112 @@
+##### Bash Files #####
+
+# .bash_profile 
+# Similar to .bash_rc, but it's designed to execute only when you login. Takes your username and password to configure your shell. If you're already in the shell and open a new window then your system will use .bashrc to config the new shell. 
+
+# To see what's in your bash profile run ls -al from the root directory. This will show all files even those with a leading dot (.) and use listing format. This will output the bash files, .ssh, .pki, .viminfo, .lesshst, etc. 
+ls -al 
+
+# By default bash_profile will check for .bashrc and run it if it exists. Also, it will set the path PATH=$PATH:$HOME/bin -> appens current dir "$HOME/bin" onto current environment path variable PATH=$PATH and exports it so that it's added to environment path. 
+vim .bash_profile 
+
+# You can update the .bash_profile to have configs unique settings that will be created each time a user logs in. EX: aliasing commands
+# To do this add your alias to the end of the .bash_profile
+alias eighty='netstate -ano | grep 80'
+
+
+# .bashrc
+# Use ls -al in root directory to find it
+ls -al
+
+# .bashrc is executed before the command prompt comes up or when you start a new bash instance by typing bash in a shell
+# The file aliases functions rm, cp, and mv. Also, it has a source global definition that checkis if file /etc/bashrc exists, then it executes it. This makes only the alias changes applied to the accounts in the /etc/bashrc file. .bashrc is configured at a system level to config settings for users. 
+vim .bashrc
+
+# Editing .bashrc - since it is only ran when .bash_profile calls it (which can be removed to prevent it from being called), we may want to put something in here to be ran whenever a bash shell is restarted. A value can be set or command can be added to the .bashrc file. 
+# Here a environemnt value is added 
+export NEWVAL=/usr/local/bin
+# Check (it doesn't exist)
+env | grep NEWVAL
+# Start new bash instance
+bash 
+# Recheck (does exist)
+env | grep NEWVAL
+# exit shell
+exit
+# Recheck (doesn't exist in the original shell)
+env | grep NEWVAL
+
+
+# .bash_history
+# locally instance file vs system wide file w/ rc ending
+# bash history is the history of bash commands for that particular user. Run the following command to see how your bash history handles duplicates. 
+env | grep HISTCONTROL 
+
+# Sometimes you don't want all the commands you run to be captured. For instance, as regular user if you have a command that requires you to pass your password in plaintext, you probably don't want that caputred in bash history because anyone with system admin or sudo privileges would be able to see that. 
+# To prevent bash history from recording your command you can use the control directive ignore space
+export HISTCONTROL=$HISTCONTROL:ignorespace
+env | grep HIST
+
+#Type a space before the command for it to be ignored 
+ ls -la
+cat .bash_history
+# You shouldn't see ls -la that was just executed. 
+
+# Another important use case of bash history is simply a reminder of previous commands you have ran. Typically the default size isn't enough so use the following commands to check the limits. 
+
+echo $HISTSIZE 
+# The number of commands to remember in the command history. If the value is 0, commands are not saved in the history list. Numeric values less than zero results in every command being saved on the history list (there is no limit). 
+
+echo $HISTFILESIZE
+# The maximum number of lines contained in the history file. When this variable is assigned a value, the history file is truncated, if necessary, to contain no more than that number of lines by removing the oldest entries. The history file is also truncated to this size after writing it when a shell exits. If the value is 0, the history file is truncated to zero size. Non-numeric values and numeric values less than zero inhibit truncation. 
+
+# To change the limit modify the HISTSIZE and HISTFILESIZE in the .bashrc file
+vim ~/.bashrc
+HISTSIZE=<Updated limit #>
+HISTFILESIZE=<Updated limit #>
+source ~/.bashrc #used to apply changes
+
+
+# .bash_logout
+# Doesn't always exist on a system, but can be very useful. .bash_logout contains a comment that is the last thing that happens when you exit or logout a terminal session
+ls -la 
+cat .bash_logout
+
+# When you login to the shell .bashrc is called from .bash_profile. But .bash_logout is called on logout. So if you want to make a change everytime a user logs out, say overwrite or delete files then this is where you would set that. 
+# Example - overwrite .bashrc with the original when they do a clean exit to ensure that .bashrc is applied in it's current config to all users on login. Also, ensures that user changes don't persist across sessions (changes could negatively impact system). 
+vim ~/.bashrc
+export JAVA_HOME=/opt/java/bin #add setting you want for each login
+esc !wq
+env | grep JAVA #check in current environemnt
+bash #start new session
+env | grep JAVA #check in new session
+exit #see that it's no longer there 
+
+# Having a .bashrc.original (backup of original) and .bashrc (current one that user may have modified). You can update the .bash_logout to override the current with the backup to prevent changes from being made
+vim ~/.bash_logout
+cp ~/.bashrc.original ~/.bashrc #overrides current with the backup on exit of the shell
+
+#exit and re-enter shell to test
+exit 
+su - 
+ls -la
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
