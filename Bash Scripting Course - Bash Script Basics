@@ -10,3 +10,26 @@ echo "Hello World"
 esc wq! 
 chmod u+x test.sh
 test.sh 
+
+# Environment Variables
+env # displays all env variables
+
+# Environment variables can be accessed when using the dollar sign in front of the variable and they are typically designated with all caps
+# Below is a shell script that outputs the value of environment variables. 
+vim environment.sh
+#!/bin/bash
+clear
+echo "This script will give us environment info"
+echo "========================================="
+echo "Hello Username: $USER"
+echo ""
+echo "Your Home Directory is: $HOME"
+echo ""
+echo "Your History File Will Ignore: $HISTCONTROL"
+echo ""
+echo "Your Terminal Session Type is: $TERM"
+echo ""
+
+# update permissions
+chmod u+x * # gives execute permissions for the user on everything in the directory. 
+
