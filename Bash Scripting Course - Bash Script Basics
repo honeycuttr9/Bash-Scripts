@@ -187,6 +187,86 @@ set # displays all environemnt variables specific to the session
 # environment variables NOT to modify
 
 
+# Quotes and Escapes
+# Single quotes are referred to as literal quotes and print things exactly as they appear
+echo '$PRICE' #prints $price
+
+# Double quotes print the literal value of whatever is inclosed, expept for the dollar sign
+echo "$PRICE" # it is looking for a value
+export PRICE=10
+echo "This is the price: $PRICE"
+
+# Escape characters (escape sequence) are used when we want to remove a special meaning from a character. Say you want to print out the dollar sign in front of a variable
+echo "\$PRICE"
+
+# What if you want to print a backslash? 
+echo "\" # it is looking for another value after the slash, so what you'll need to do is add another backslash
+echo "\\"
+
+# back tic char - used to substitute the value of an entire command into our statement
+# example - display the system date and time with surrounding text 
+echo "`date`"
+echo `date`
+echo Today's date is: `date`
+echo "Todays date is `date`"
+
+
+# Using /dev/null
+# Used to manage the output of command line and script execution that is non-interactive. 
+# It redirects output to a file. Typically used for cron job logs to output errors or successes since they're running in the background
+ls -al /dev/null
+echo "Hello world"
+echo "Hello world" >> /dev/null
+ 
+vim devnullexample.sh
+#!/bin/bash
+echo "Output to console"
+echo "Output to blackhole" >> /dev/null
+echo "Exit status $?" 
+es wq!
+
+# redirect output of an entire script 
+devnullexample.sh >> /dev/null #appends
+devnullexample.sh > /dev/null #overwerites
+
+# TODO cronjob example https://www.cyberciti.biz/faq/how-do-i-add-jobs-to-cron-under-linux-or-unix-oses/ 
+
+
+# Read statement
+# Used in interactive scripts to read input from user 
+
+vim readexample.sh
+#!/bin/bash
+#interactive script to illustrate how to use read statements
+echo "Enter your first name: " 
+read FIRSTNAME
+echo "Enter your last name: "
+read LASTNAME
+echo "Hello $FIRSTNAME $LASTNAME" 
+
+while true; do 
+  read -p "Do you wish to echo your name?" yn 
+  case $yn in 
+    [Yy]* ) echo "Hello $FIRSTNAME $LASTNAME" 
+    [Nn]* ) exit;; 
+    [*] echo "Please anser yes or no.";;
+  esac
+esc wq!
+
+
+# Shell Expansion
+echo C{OVID-19, oronavirus}
+echo st{il,al}l
+
+env | grep "HO*" #finds env variabels that begin with HO
+echo "${!HO*}" #echo anything that starts with HO
+export TEST="blach" && echo $TEST #set a variable and echo at the same time
+echo "${TESTVAR:=12}" #shortcut to setting and printing a variable
+echo $TESTVAR
+echo "$[ 2 * 2 ]"
+
+
+
 
 
 
