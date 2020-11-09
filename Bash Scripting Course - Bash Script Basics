@@ -30,6 +30,173 @@ echo ""
 echo "Your Terminal Session Type is: $TERM"
 echo ""
 
-# update permissions
+# update permissions & run script 
 chmod u+x * # gives execute permissions for the user on everything in the directory. 
+environment.sh
+
+# Setting and using Environment Variables on the Command Line
+# Shortcut to a command used via the command line for commonly used commands or data like passwords you don't want to have in your bash history, traditionally caps for environment variables
+FIRSTNAME="Bob" # sets environment variable
+env | grep FIRSTNAME # check current shell session for var, won't show up because it hasn't been exported to be ready for use by the environment
+export FIRSTNAME
+env | grep FIRSTNAME # will now display in current env
+echo "Your first name is $FIRSTNAME" # access env variable via $
+
+# Example 
+export SEARCHSITE="https://wwww.google.com" # set environment var and export all in one step 
+env | grep SEARCHSITE
+elinks SEARCHSITE # to access search site via terminal
+
+# Using substitution with environment variables
+export TODAYSDATE=`date` # TODAYS date is dynamically set to the var date at they time of export, that is accessed using back tics. After this it's not updated unless it exported again, meaning that it will only be accessing a static date variable with the previous timestamp value
+echo $TODAYSDATE
+
+# Setting and using variables in scripts
+env | grep $PATH # shows path, directories that are here can be ran without specifying the whole path or the ./ in the beginning. 
+
+ll 
+vim varexample.sh
+#!/bin/bash
+
+MYUSERNAME="username" # environment variables only used within the scipt aren't required to be exported 
+MYPASSWORD="pass123"
+STARTIME=`date`
+
+echo "My login name for this application is: $MYUSERNAME"
+echo "My login password for this application is: $MYPASSWORD"
+echo "This script started at: $STARTIME"
+
+for i in {1..10}
+do 
+  ping google.com
+  echo "ping $i"
+done
+
+ENDTIME=`date`
+echo "This script started at: $ENDTIME"
+esc wq! 
+
+env | grep MYUSERNAME # shows the env variable isn't set
+varexample.sh # execute script
+env | grep MYUSERNAME # shows the env variable isn't set and it wouldn't be there even if we did an export because, we are running this in an instance of the bash shell (sub shell)
+
+
+# Comment Types & Sturctures
+
+# Top comments are usually for overall info on what the script is for and anything that it does. Designated by the # (pound) sign. 
+# At the end of a command you can add a comment. Designated again by the # sign. THese are used to identify what a command is for. 
+# Similar to the comments to descirbe a command they can be used to explain what env variables are used for. 
+# No group comments, only a single line at a time
+
+
+# Commmand Substitution - Prevents you from having to type in long commands everytime
+# create a new script called substitution.sh
+vim substitution.sh
+!#/bin/bash
+# This script is for illustrating how to do simple substitution using bash
+
+shopt -s expand_aliases # by default expanding aliasing from within the subshell is not enabled. Meaning that aliases are only available within the current environment. This command enables that, without it command not found errors will occur on the aliases TODAY and UFILES. 
+
+alias TODAY="date"
+alias UFILES="find /home -user user"
+
+TODAYSDATE=`date`
+USERFILES=`find /home -user user`
+
+echo "Today's Date: $TODAYSDATE"
+echo "All Files Owned by USER: $USERFILES"
+
+A=`TODAY`
+B=`UFILES`
+echo "With Alias, TODAY is: $A"
+echo "With Alias, UFILES is: $B"
+esc wq!
+
+chmod u+x substitution.sh
+substitution.sh
+
+# Exit Status
+# two primary status return a value of 0 or a non-zero value that means something went wrong
+#Example 1 
+date
+status=$?
+echo "The date command exit status : ${status}"
+
+# Example 2
+# Using exit status in findhost.sh 
+vim findhost.sh
+#!/bin/bash
+# set var 
+FILE="/etc/hosts"
+ 
+# get host name 
+read -p "Enter a hostname : " hostname
+ 
+# try to locate hostname/computer name in $FILE
+grep -q -w "${hostname}" "${FILE}"
+ 
+# store exit status of grep
+# if found grep will return 0 exit status
+# if not found, grep will return a nonzero exit status
+status=$?
+ 
+if test $status -eq 0
+then
+	echo "Host '$hostname' found in $FILE file."
+else
+	echo "Host '$hostname' not found in $FILE file."
+fi
+
+# Arithmetic Operations
+# expr command to calculate mathematical expressions
+# The expr command in Unix evaluates a given expression and displays its corresponding output. It is used for:
+# Basic operations like addition, subtraction, multiplication, division, and modulus on integers.
+# Evaluating regular expressions, string operations like substring, length of strings etc.
+expr --version
+expr --help
+expr 10 + 12 #22
+expr 12 \* 2 #24
+
+# add1.sh, shell script using expr
+#!/bin/bash
+echo "Enter two numbers"
+read x 
+read y
+sum=`expr $x + $y`
+echo "Sum = $sum"
+
+# add2.sh, can easily be changed to other operations subtration (-), division (/), multiplication (*), modulus (%), post increment (++), post decrement (--), exponentionation (**)
+#!/bin/bash
+read -p "Enter two numbers : " x y
+ans=$(( x + y ))
+echo "$x + $y = $ans"
+
+
+# Global and Local Environment Variables
+# Good to tell you what variables you can and can't use
+# printenv (sh utils package - available on almost all linux distros except for older versions) is used to print all or part of environment variables, if no variable is specified it prints the names and value pair for them all
+man printenv
+printenv --version
+printenv | more
+# very similar to env 
+man env
+# set command is used for only local environment variables
+man set
+set # displays all environemnt variables specific to the session
+
+# environment variables NOT to modify
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
