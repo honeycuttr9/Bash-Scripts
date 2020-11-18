@@ -266,6 +266,78 @@ echo $TESTVAR
 echo "$[ 2 * 2 ]"
 
 
+# Type of Variazbels (Implicit vs Explicit Definition)
+# Variables in bash are implicitly declared, meaning all you have to do is give the variabel a name and a value. The value assigned will implicitly determine the type of variable it is
+# Explicit variables are declared to be a certain value type. 
+
+MyVAR = 4 # 
+echo $MYVAR
+echo 'expr $MYVAR + 6`
+
+# how to determine what type a variable is, is by using the declar function. It can set a variable type, unset a type, display the type and the value 
+declare -p $MYVAR
+MYVAR2 = "NAME"
+echo "`expr $MYVAR2 + 5`" #implicit declaration as a string, not an int, so it will fail
+
+declare -i NEWVAR=10 #explicitly define as an int only
+declare -p NEWVAR
+MYVAR = "Testing implicit variables"
+echo $MYVAR
+NEWVAR="Someithing"
+echo $NEWVAR #converts a new value assigned, that's not an integer, to the value of zero
+
+
+declare +i NEWVAR # if you need to assign a string to it. 
+declare -p NEWVAR # now there's no set type
+NEWVAR = "Big String"
+echo $NEWVAR
+
+# creating read only variables 
+# declare statement using the -r flag
+declare -r READONLY="This is read only and cannot be overwritten"
+declare -p READONLY
+
+#test
+READONLY="New stuff"
+declare +r READONLY #attempting to unset readonly 
+
+
+# Arrays 
+# Variable that has an index associated with it that have index values and is referred to by the array name. Index starts at zero. 
+
+
+FIRSTARRAY = ("Bob" "Jill" "Jack") # space delimited 
+echo $FIRSTARRAY #it assumes that I want to echo the first value
+echo ${FIRSTARRAY[0]} # proper way to access values at their index
+echo ${FIRSTARRAY[*]} # prints everything to the terminal 
+FIRSTARRAY[2] = "John" # replaces index 2
+
+SECONDARRAY = ("Bob", "Jill", "Jack") # commas added
+echo #SECONDARRAY
+echo #{SECONDARRAY[0]} # to change you'll have to reassign
+
+# use case for arrrays are in loops, we are going to create a bash script that pings an array of servers
+vim ping_hosts.sh
+#!/bin/bash
+@ simple ping script to check if hosts are up and available
+
+HOSTNAMES=("host1" "host2" "host3" "host4")
+COUNT=0
+
+for INDEX in ${HOSTNAMES[@]}; do 
+  echo "========== Pinging host at ${INDEX} ============="
+  ping -c 3 ${HOSTNAME[COUNT]} #uses expansion to access hosts so brackets are used
+  if [$? -eq 0 ]; then
+    echo "${HOSTNAME[COUNT]} ping was successful"  
+  else 
+    echo "${HOSTNAME[COUNT]} ping failed" 
+  fi
+done
+
+esc :wq!
+chmod 755 ping_hosts.sh
+
+
 
 
 
