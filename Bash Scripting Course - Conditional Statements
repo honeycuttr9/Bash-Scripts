@@ -1,0 +1,74 @@
+# Demonstrates how to use conditional statements 
+
+############## pass parameters ##############
+# first we need to discuss how to pass parameters that can be used in conditionals 
+# script to show how to pass variables to scripts in the CLI
+# create file
+vim cmdlinevar.sh
+#!/bin/bash
+
+# demo of cmd line values passed in with our shell script
+echo "The following item was passed into the script at run time $1" # in this case counting starts at 1 rather than 0 like many other computer counting does 
+
+# exit and chmod u+x and execute to show that there's nothing displayed for $1 if there's no variable passed 
+cmdlinevar.sh # displays nothing for $1
+cmdlinevar.sh helloWorld # passed into script
+cmdlinevar.sh hello world # only hello
+cmdlinevar.sh "Hello World" # passes whole string with spaces
+cmdlinevar.sh `expr 2 + 2` # passes in value of expr
+
+
+# replace $1 in output string with variable to make it easier to read your code, know what the variables are used for and reuse in the script
+vim cmdlinevar.sh 
+USRENAME=$1
+PASSWORD=$2
+echo "The following username is $USERNAME and password is $PASSWORD" 
+
+############## if statement ##############
+ # if statements are the first conditional we will talk about and they are used to guide the computer in decision making and control the eb and flow of execution. 
+ # we're keeping them outside of functions for now, but it gives us the ability to test for a wide variety of things (files, strings, ints comparison, etc )
+ vim if.sh 
+ #!/bin/bash
+ # simple if statement script for guessing a number
+ 
+ echo "Guess the Secret Number"
+ echo "========================"
+ echo ""
+ echo "Enter a Number Between 1 and 5: "
+ read GUESS
+ if [ $GUESS -eq 3 ] # -eq is the same as == in some languages
+   then
+     echo "You  Guessed the Correct Number!"
+ fi # if statements in bash end with a reverese if -> fi
+ 
+ 
+ # example #2 we will test if a file exists via if statements
+ vim testFile.sh 
+ #!/bin/bash
+ # tests for the existence of indicated file name
+ 
+ FILENAME="mytest.txt" #can change "mytest.txt" to $1 to pass in param via cli
+ echo "Testing for the existence of a file called $FILENAME" 
+ 
+ fi [ -a $FILENAME ] # changing to [ ! -a $FILENAME ] will test for the file being nonexistent
+   then 
+     echo "File $FILENAME does exist" 
+ fi
+ 
+ 
+ # test for multiple values
+ vim twovars.sh
+ #!/bin/bash
+ # tests multiple expressions in single if statement 
+ 
+ FileNAME=$1
+ 
+ echo "Testing for file $FILENAME and readability" 
+ 
+ if [ -f $FILENAME ] && [ -r $FILENAME ]
+   then 
+     echo "File $FILENAME exists AND is readable"
+fi
+
+
+# if then else
