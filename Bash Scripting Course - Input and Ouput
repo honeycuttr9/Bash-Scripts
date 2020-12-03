@@ -1,0 +1,49 @@
+##### Reading Files ####
+# Reading non binary files have many use cases that can be useful for system admins, security professionals, etc. 
+# A standard way to read from a file passed in at runtime or included in a promt is by 
+
+vim baseballteams.txt # enter baseball teams
+
+vim fileReader.sh 
+#!/bin/bash
+# simple file reader for no-binary files. Displays one line at a time
+
+echo "enter a file name to read: "
+read FILE
+
+while read -r BASEBALLTEAM; do 
+  echo "Team Name: $BASEBALLTEAM" # can add additional manipulation in the while loop and an if statement before the loop to check if file existst
+done < "$FILE"
+
+
+##### File Descriptors & Handles ####
+# file descriptors are a way for us to formally open and close a file 
+# numeric representation of a file we want to read, write or read and write to and we can determine how we open that file at runtime. 
+# as long as you use a number for your file descriptor that is greater than or equal to three you'll be fine because those are reserved for system I/O
+# because in linux all files, folders, deviecs, & everything is treated as a file. 
+# Reserved File Descriptors: 
+# 0 - standard input
+# 1 - standard output
+# 2 - standard error 
+
+vim fileDescriptor.sh
+#!/bin/bash 
+# demo of reading and writing to a file using a file descriptor
+
+echo "Enter a file name to read: " 
+read FILE
+
+exec 5<>$FILE # 5 is > 2, we have to determine if we want to read(<) write(>) or do both(<>) on this file, 
+
+while read -r BASEBALLTEAM; do 
+  echo "Team Name: $BASEBALLTEAM" 
+done <&5
+
+echo "File was read on: `date`" >&5 # writes > statement and system date to file descriptor specified 
+
+# Since we've opened a file descriptor we want to close it. 
+# file descriptor is left open unless closed and can take up space that prevents you from using anymore file descriptors
+exec 5>&~ # echo this out to the file descriptor and when we're done go ahead and close it 
+
+fileDescriptor.sh # no echo with timestamp because it was written to after 
+cat fileDescriptor.text # Shows the echo output saying it was read becuase it was added to the file after it was read. 
