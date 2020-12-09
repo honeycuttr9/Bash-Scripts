@@ -1,0 +1,66 @@
+##### Debugging #####
+# Debugging of shell scripts can be done via checking exit codes, previous commands that have been run, but sometimes you need additional detail to see what occurred
+# Sometimes what you can do is setting debugging for the entire script session when it's launched or we can set/unset specific debug info
+# display environment variables via env.sh
+# usrname, home dir, history file will ignore, terminal session type
+vim env.sh
+#!/bin/bash 
+
+clear
+
+echo "This script will give us environment info" 
+echo "========================================="
+echo ""
+echo "Hello username: $USER"
+echo ""
+echo "Your home directory is: $HOME" 
+echo ""
+echo "Your history file will ignore: $HISTCONTROL" 
+echo ""
+
+# debug script via "bash -x env.sh"
+bash -x env.sh
+
+# most times you won't be debugging a simple echo script, but rather a more complicated script. 
+# there's some settings you can use within the script that will debug the input
+vim debug.sh
+#!/bin/bash
+# simple file reading (non-binary) and displaying on line at a time from superhero.txt file
+
+echo "Enter a file to read: " 
+
+# DEBUG START
+set -x # STARTS DEBUG
+
+read FILE
+
+while read -r SUPERHERO; do 
+  echo "Superhero Name: $SUPERHERO" 
+done < "$FILE" 
+
+set +x # STOPS DEBUG
+
+
+##### Error Handling #####
+# From within our script we can make determinations about how we want to handle errors that may happen and exit with a particular non zero exit code. that can be pciked up as part of another script or process. More importantly it gives us the opportunity to some basic error handling within the shell script. 
+vim errorexit.sh 
+#!/bin/bash 
+# demo of using error handling with exit 
+
+echo "Change to a directory and list the contents" 
+DIRECTORY=$1 2>/dev/null
+cd $DIRECTORY # if after you cd to your new directory you execute a rm * command, it will execute even if you haven't changed to the correct directory. To prevent this from happening you can handle the error of there not being the directory provided. 
+if [ "$?" = "0" ]; then 
+  echo "We can change into the directory $DIRECTORY, and here are the contents 
+  echo "`ls -al`" 
+else
+  echo "Cannot change directories, exiting with an error and no listing" 
+  exit 1 
+fi
+
+# create directory &  files & test
+echo "test" > tmp/test.txt
+errorexit.sh tmp
+
+# exit error codes can be changed to a unique value for your script so that way you know where it exited and have an idea of what the error could be. 
+echo "$?" # displays the previous error code. 
