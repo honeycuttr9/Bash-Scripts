@@ -4,7 +4,9 @@
 # Starts a new shell and executes cmds in that shell and is independant of the current user environment
 
 vim test.sh # .sh is not required, but is helpful to identify on ls 
-#!/bin/bash
+# Adding #!/bin/bash as the first line of your script, 
+# tells the OS to invoke the specified shell to execute the commands that follow in the script
+#!/bin/bash 
 clear
 echo "Hello World"
 esc wq! 
