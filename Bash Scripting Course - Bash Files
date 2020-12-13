@@ -4,7 +4,7 @@
 # Similar to .bash_rc, but it's designed to execute only when you login. Takes your username and password to configure your shell. If you're already in the shell and open a new window then your system will use .bashrc to config the new shell. 
 
 # To see what's in your bash profile run ls -al from the root directory. This will show all files even those with a leading dot (.) and use listing format. This will output the bash files, .ssh, .pki, .viminfo, .lesshst, etc. 
-ls -al 
+ls -al # list all 
 
 # By default bash_profile will check for .bashrc and run it if it exists. Also, it will set the path PATH=$PATH:$HOME/bin -> appens current dir "$HOME/bin" onto current environment path variable PATH=$PATH and exports it so that it's added to environment path. 
 vim .bash_profile 
