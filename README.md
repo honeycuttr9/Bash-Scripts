@@ -1,1 +1,1 @@
-Useful bash scripts for general uses on Linux systems
+Useful bash scripts for general use cases on Linux systems
